@@ -10,48 +10,48 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.neeraj.EmployeeService;
 import com.neeraj.dao.EmployeeDAO;
 import com.neeraj.domain.Employee;
 
 @RestController
+@RequestMapping("/employee")
 public class EmployeeController {
-	
-	
-		@Autowired
-		private EmployeeDAO dao;
 
-		@GetMapping(path = "/employee/list")
-		public List<Employee> list() {
-			return dao.findAll();
+	@Autowired
+	private EmployeeService service;
 
-		}
+	@GetMapping(path = "/all")
+	public List<Employee> retrive() {
+		return service.list();
 
-		@PostMapping(path = "/employee/insert")
-		public Employee create(@RequestBody Employee emp) {
-			return dao.save(emp);
-			
-		}
-
-		@GetMapping(path = "/employee/employeebyID/{id}")
-		public Optional<Employee> getById(@PathVariable Long id) {
-			return dao.findById(id);
-
-		}
-
-		@DeleteMapping(path = "/employee/delbyID/{id}")
-		public List<Employee> deleteById(@PathVariable Long id) {
-			dao.deleteById(id);
-			return dao.findAll();
-
-		}
-
-		@PutMapping(path="/employee/update/")
-		public Employee updateDetails(@RequestBody Employee e){
-			return dao.save(e);
-			
-		}
 	}
 
+	@PostMapping
+	public Employee create(@RequestBody Employee emp) {
+		return service.insert(emp);
 
+	}
+
+	@GetMapping(path = "/{id}")
+	public Employee getListById(@PathVariable Long id) {
+		return service.getById(id);
+
+	}
+
+	@DeleteMapping(path = "/{id}")
+	public List<Employee> deleteById(@PathVariable Long id) {
+		service.deleteById(id);
+		return service.list();
+
+	}
+
+	@PutMapping
+	public Employee update(@RequestBody Employee e) {
+		return service.updateDetails(e);
+
+	}
+}
